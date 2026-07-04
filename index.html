@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Ang Palengke ni Nena — Kwentong Addition</title>
+<title>Namalengke si Nena — Kwentong Addition</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800&display=swap" rel="stylesheet">
@@ -58,7 +58,7 @@
     overflow:hidden;
   }
 
-  /* ---------- Illustration slides ---------- */
+  /* ---------- Backdrop (blurred fill behind the framed page) ---------- */
   .slide-backdrop{
     position:absolute; inset:0;
     width:100%; height:100%;
@@ -83,6 +83,8 @@
     overflow-y:auto;
   }
 
+  /* ---------- The "page" — every slide (cover or scene) uses this same
+     A4-like portrait shape, so the whole book feels consistent ---------- */
   .book{
     display:flex;
     flex-direction:column;
@@ -92,9 +94,6 @@
     gap:0;
   }
 
-  .book.landscape{
-    width: min(94vw, calc(56dvh * 1.414), 640px);
-  }
   .frame{
     position:relative;
     width:100%;
@@ -104,9 +103,6 @@
     box-shadow:0 14px 34px rgba(0,0,0,.45), 0 2px 0 rgba(255,255,255,.15) inset;
     border:4px solid #fff;
     flex-shrink:0;
-  }
-  .frame.landscape{
-    aspect-ratio: 1491 / 1055;
   }
   .frame-img{
     position:absolute; inset:0;
@@ -147,7 +143,7 @@
     margin:0;
   }
 
-  /* ---------- Price-tag question badge ---------- */
+  /* ---------- Price-tag question badge (used inside story pages) ---------- */
   .price-tag{
     position:relative;
     margin-top:14px;
@@ -178,144 +174,89 @@
     color:var(--terracotta-dark);
   }
 
-  /* ---------- Review slide (paper background, no illustration) ---------- */
-  .slide.review-slide{
-    background:
-      radial-gradient(1200px 600px at 15% -10%, #FFF7E6 0%, transparent 60%),
-      radial-gradient(900px 500px at 110% 110%, #F6E4C1 0%, transparent 55%),
-      var(--paper);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:32px;
-    overflow-y:auto;
-  }
-
-  /* ---------- Cover slides (front & back — illustrated, book-style) ---------- */
+  /* ---------- Cover caption content (front cover / back cover) ---------- */
   .cover-caption{
     text-align:center;
   }
-  .title-wrap{
-    max-width:560px;
-    text-align:center;
-    margin:0 auto;
-  }
   .basket-emoji{
-    font-size:clamp(56px, 9vh, 72px);
+    font-size:clamp(40px, 6dvh, 56px);
     display:block;
-    margin-bottom:8px;
+    margin-bottom:6px;
     filter:drop-shadow(0 6px 10px rgba(0,0,0,.15));
   }
-  .kicker{
+  .cover-caption h1{
     font-family:"Baloo 2", sans-serif;
-    text-transform:uppercase;
-    letter-spacing:.14em;
-    font-size:clamp(13px, 1.8vh, 15px);
-    font-weight:700;
-    color:var(--leaf);
-    margin-bottom:12px;
-  }
-  .title-wrap h1{
-    font-family:"Baloo 2", sans-serif;
-    font-size:clamp(40px, 7vh, 64px);
+    font-size:clamp(26px, 4.6dvh, 38px);
     color:var(--terracotta-dark);
-    margin:0 0 14px;
-    line-height:1.05;
+    margin:0 0 10px;
+    line-height:1.1;
+    font-weight:700;
   }
-  .title-wrap p.sub{
-    font-size:clamp(17px, 2.4vh, 21px);
+  .cover-caption p.sub{
+    font-size:clamp(15px, 2.1dvh, 18px);
     color:var(--ink-soft);
     font-weight:700;
-    margin:0 0 30px;
-    line-height:1.55;
+    margin:0 0 18px;
+    line-height:1.5;
   }
   .start-btn{
     font-family:"Baloo 2", sans-serif;
-    font-size:clamp(18px, 2.4vh, 21px);
+    font-size:clamp(16px, 2.2dvh, 19px);
     font-weight:700;
     color:#fff;
     background:linear-gradient(180deg, var(--terracotta) 0%, var(--terracotta-dark) 100%);
     border:none;
-    padding:17px 36px;
+    padding:14px 30px;
     border-radius:999px;
-    box-shadow:0 8px 0 #9E4A1E, 0 10px 20px rgba(0,0,0,.25);
+    box-shadow:0 7px 0 #9E4A1E, 0 9px 18px rgba(0,0,0,.25);
     cursor:pointer;
     letter-spacing:.02em;
     transition:transform .12s ease;
   }
   .start-btn:active{
     transform:translateY(4px);
-    box-shadow:0 4px 0 #9E4A1E, 0 6px 12px rgba(0,0,0,.22);
+    box-shadow:0 3px 0 #9E4A1E, 0 5px 10px rgba(0,0,0,.22);
   }
   .hint{
-    margin-top:24px;
-    font-size:clamp(14px, 1.8vh, 16px);
+    margin-top:16px;
+    font-size:clamp(12px, 1.6dvh, 14px);
     color:var(--ink-soft);
     opacity:.85;
     font-weight:700;
   }
 
-  /* ---------- Review slide ---------- */
-  .review-slide{ align-items:flex-start; padding-top:calc(56px + env(safe-area-inset-top,0px)); }
-  .review-inner{ max-width:600px; width:100%; margin:0 auto; text-align:left; padding-bottom:60px;}
-  .review-inner h2{
+  /* ---------- Compact review questions (overlaid on the back cover page) ---------- */
+  .review-block{
+    margin-top:16px;
+    text-align:left;
+  }
+  .review-block h2{
     font-family:"Baloo 2", sans-serif;
     color:var(--terracotta-dark);
-    font-size:clamp(26px, 4vh, 34px);
-    margin:0 0 6px;
+    font-size:clamp(17px, 2.6dvh, 20px);
+    margin:0 0 10px;
     text-align:center;
-  }
-  .review-inner .sub{
-    text-align:center;
-    color:var(--ink-soft);
-    font-weight:700;
-    margin-bottom:26px;
-    font-size:clamp(15px, 2vh, 17px);
   }
   .q-card{
     background:#fff;
     border:2px solid var(--paper-dark);
-    border-radius:16px;
-    padding:18px 20px;
-    margin-bottom:16px;
-    box-shadow:0 4px 10px rgba(60,40,20,.08);
+    border-radius:12px;
+    padding:10px 14px;
+    margin-bottom:10px;
+    box-shadow:0 3px 8px rgba(60,40,20,.08);
   }
   .q-card p{
-    margin:0 0 12px;
+    margin:0 0 6px;
     font-weight:700;
     color:var(--ink);
-    font-size:clamp(16px, 2.1vh, 18px);
+    font-size:clamp(13px, 1.8dvh, 15px);
   }
-  .q-row{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
   .q-eq{
     font-family:"Baloo 2", sans-serif;
-    font-size:clamp(19px, 2.4vh, 22px);
+    font-size:clamp(15px, 2dvh, 17px);
     color:var(--terracotta-dark);
     font-weight:700;
   }
-  .reveal-btn{
-    font-family:"Nunito Sans", sans-serif;
-    font-weight:700;
-    font-size:14px;
-    color:var(--leaf);
-    background:#EDF4E7;
-    border:1.5px solid var(--leaf);
-    border-radius:999px;
-    padding:7px 16px;
-    cursor:pointer;
-  }
-  .answer{
-    display:none;
-    font-family:"Baloo 2", sans-serif;
-    font-weight:700;
-    color:#fff;
-    background:var(--leaf);
-    padding:5px 14px;
-    border-radius:999px;
-    font-size:15px;
-  }
-  .q-card.revealed .answer{ display:inline-block; }
-  .q-card.revealed .reveal-btn{ display:none; }
 
   /* ---------- Nav dots ---------- */
   .dots{
@@ -381,17 +322,16 @@
       <img class="slide-backdrop" src="images/cover-front.jpg" alt="" aria-hidden="true">
       <div class="backdrop-scrim"></div>
       <div class="stage">
-        <div class="book landscape">
-          <div class="frame landscape">
+        <div class="book">
+          <div class="frame">
             <img class="frame-img" src="images/cover-front.jpg" alt="Front cover — papasok sa palengke sina Nena at Nanay">
           </div>
           <div class="caption-card cover-caption">
             <span class="basket-emoji">🧺</span>
-            <div class="kicker">Project KABULIG • ARAL Math</div>
-            <h1>Ang Palengke ni Nena</h1>
+            <h1>Namalengke si Nena</h1>
             <p class="sub">Isang kwentong addition para sa Grade 2–3.</p>
             <button class="start-btn" id="startBtn">Simulan ang Kwento →</button>
-            <div class="hint">I-swipe pakaliwa para magpatuloy sa bawat pahina.</div>
+            <div class="hint">I-swipe pakaliwa para magpatuloy.</div>
           </div>
         </div>
       </div>
@@ -490,56 +430,45 @@
       </div>
     </section>
 
-    <!-- Slide 6: Review -->
-    <section class="slide review-slide">
-      <div class="review-inner">
-        <h2>🧮 Buod na Tanong</h2>
-        <p class="sub">Sagutan sa iyong sagutang papel o notbuk.</p>
-
-        <div class="q-card">
-          <p>1. May 3 mangga at 2 saging. Ilan lahat?</p>
-          <div class="q-row">
-            <span class="q-eq">3 + 2 = ___</span>
-          </div>
-        </div>
-
-        <div class="q-card">
-          <p>2. May 4 kamatis at 3 talong. Ilan lahat?</p>
-          <div class="q-row">
-            <span class="q-eq">4 + 3 = ___</span>
-          </div>
-        </div>
-
-        <div class="q-card">
-          <p>3. May 5 pandesal at 4 pandesal. Ilan lahat?</p>
-          <div class="q-row">
-            <span class="q-eq">5 + 4 = ___</span>
-          </div>
-        </div>
-
-        <div class="q-card">
-          <p>4. Kung idadagdag ang lahat ng prutas, gulay, at tinapay — ilan lahat ang binili ni Nena?</p>
-          <div class="q-row">
-            <span class="q-eq">___ + ___ + ___ = ___</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Slide 7: Back Cover -->
+    <!-- Slide 6: Back Cover — kasama na ang Buod na Tanong -->
     <section class="slide">
       <img class="slide-backdrop" src="images/cover-back.jpg" alt="" aria-hidden="true">
       <div class="backdrop-scrim"></div>
       <div class="stage">
-        <div class="book landscape">
-          <div class="frame landscape">
+        <div class="book">
+          <div class="frame">
             <img class="frame-img" src="images/cover-back.jpg" alt="Back cover — pagsapit ng gabi sa bahay nina Nena">
           </div>
           <div class="caption-card cover-caption">
             <span class="basket-emoji">🌙</span>
-            <p class="caption-text" style="font-size:clamp(20px,3dvh,26px); font-family:'Baloo 2', sans-serif; color:var(--terracotta-dark);">Wakas</p>
-            <p class="sub" style="margin-top:4px;">Salamat sa pagbasa ng "Ang Palengke ni Nena"!</p>
-            <button class="start-btn" id="restartBtn">🔁 Ulitin ang Kwento</button>
+            <h1 style="font-size:clamp(20px,3.2dvh,26px);">Wakas</h1>
+            <p class="sub" style="margin-bottom:6px;">Salamat sa pagbasa ng "Namalengke si Nena"!</p>
+
+            <div class="review-block">
+              <h2>🧮 Buod na Tanong</h2>
+
+              <div class="q-card">
+                <p>1. May 3 mangga at 2 saging. Ilan lahat?</p>
+                <span class="q-eq">3 + 2 = ___</span>
+              </div>
+
+              <div class="q-card">
+                <p>2. May 4 kamatis at 3 talong. Ilan lahat?</p>
+                <span class="q-eq">4 + 3 = ___</span>
+              </div>
+
+              <div class="q-card">
+                <p>3. May 5 pandesal at 4 pandesal. Ilan lahat?</p>
+                <span class="q-eq">5 + 4 = ___</span>
+              </div>
+
+              <div class="q-card">
+                <p>4. Kung idadagdag ang lahat ng prutas, gulay, at tinapay — ilan lahat ang binili ni Nena?</p>
+                <span class="q-eq">___ + ___ + ___ = ___</span>
+              </div>
+            </div>
+
+            <button class="start-btn" id="restartBtn" style="margin-top:14px;">🔁 Ulitin ang Kwento</button>
           </div>
         </div>
       </div>
@@ -562,7 +491,7 @@
   // Palitan ito ng URL ng iyong deployed Google Apps Script Web App
   // (Deploy > New deployment > Web app > Execute as: Me > Who has access: Anyone)
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyDGQ9XwWN7bAONGsKJOFKLD7Fs-XG4gWnxUPzH__qQkvP7f3NVtIsPUhVoP4ipizZl/exec";
-  const STORY_NAME = "Ang Palengke ni Nena";
+  const STORY_NAME = "Namalengke si Nena";
 
   function logVisit(eventName){
     if(!APPS_SCRIPT_URL || APPS_SCRIPT_URL.indexOf("PASTE_YOUR") === 0) return;
@@ -585,7 +514,7 @@
   let index = 0;
 
   slides.forEach((_, i) => {
-    if(i === 0 || i === total - 1) return; // walang dot sa title at review
+    if(i === 0 || i === total - 1) return; // walang dot sa front/back cover
     const d = document.createElement('div');
     d.className = 'dot';
     d.addEventListener('click', () => goTo(i));
@@ -644,12 +573,6 @@
       if(dx < 0) next(); else prev();
     }
   }, { passive: true });
-
-  // Reveal answers on review slide
-  function reveal(btn){
-    btn.closest('.q-card').classList.add('revealed');
-  }
-  window.reveal = reveal;
 
   // Init
   render();
