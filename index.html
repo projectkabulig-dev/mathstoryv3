@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ang Palengke ni Nena — Kwentong Addition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBF3E1;
+    --paper-dark:#F0E3C8;
+    --ink:#3A2B1E;
+    --ink-soft:#5C4834;
+    --terracotta:#E2793A;
+    --terracotta-dark:#C4602A;
+    --basket:#A97C50;
+    --basket-dark:#7C5A38;
+    --leaf:#4B7A3D;
+    --tag:#F4D35E;
+    --tag-dark:#C99A2E;
+    --scrim-top: rgba(20,14,8,0);
+    --scrim-bottom: rgba(20,12,6,0.78);
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0; padding:0; height:100%;
+    background:var(--ink);
+    font-family:"Nunito Sans", sans-serif;
+    overscroll-behavior:none;
+  }
+  body{
+    -webkit-tap-highlight-color: transparent;
+    user-select:none;
+  }
+
+  .app{
+    position:fixed; inset:0;
+    height:100dvh; width:100vw;
+    overflow:hidden;
+    background:var(--paper);
+  }
+
+  .track{
+    display:flex;
+    height:100%;
+    width:100%;
+    transition: transform .55s cubic-bezier(.65,0,.35,1);
+    will-change: transform;
+  }
+  @media (prefers-reduced-motion: reduce){
+    .track{ transition: none; }
+  }
+
+  .slide{
+    flex:0 0 100%;
+    height:100%;
+    position:relative;
+    overflow:hidden;
+  }
+
+  /* ---------- Illustration slides ---------- */
+  .slide-bg{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover;
+    object-position:center;
+  }
+  .scrim{
+    position:absolute; inset:0;
+    background:linear-gradient(180deg, var(--scrim-top) 45%, var(--scrim-bottom) 100%);
+    pointer-events:none;
+  }
+  .eyebrow{
+    position:absolute; top:calc(env(safe-area-inset-top, 0px) + 16px); left:18px; right:18px;
+    display:flex; align-items:center; justify-content:space-between;
+    font-family:"Baloo 2", sans-serif;
+    color:#fff;
+    text-shadow:0 2px 8px rgba(0,0,0,.45);
+    font-size:14px; letter-spacing:.04em;
+    z-index:5;
+  }
+  .eyebrow .part-label{
+    background:rgba(20,14,8,.42);
+    backdrop-filter:blur(3px);
+    padding:6px 14px;
+    border-radius:999px;
+    font-weight:600;
+  }
+  .counter{
+    background:rgba(20,14,8,.42);
+    padding:6px 12px;
+    border-radius:999px;
+    font-weight:600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .caption-card{
+    position:absolute; left:0; right:0; bottom:0;
+    padding: 22px 20px calc(28px + env(safe-area-inset-bottom, 0px));
+    z-index:4;
+  }
+  .caption-weave{
+    height:8px; width:64px; margin-bottom:14px; border-radius:6px;
+    background: repeating-linear-gradient(45deg, var(--tag) 0 6px, var(--terracotta) 6px 12px);
+    box-shadow:0 1px 3px rgba(0,0,0,.3);
+  }
+  .caption-text{
+    color:#fff;
+    font-size:19px;
+    line-height:1.55;
+    font-weight:600;
+    text-shadow:0 2px 10px rgba(0,0,0,.55), 0 1px 2px rgba(0,0,0,.5);
+    max-width:640px;
+  }
+
+  /* ---------- Price-tag question badge ---------- */
+  .price-tag{
+    position:relative;
+    margin-top:16px;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    background:var(--tag);
+    color:var(--ink);
+    padding:12px 20px 12px 30px;
+    border-radius:6px 16px 16px 6px;
+    font-family:"Baloo 2", sans-serif;
+    font-weight:700;
+    font-size:17px;
+    box-shadow:0 6px 16px rgba(0,0,0,.35);
+    border:2px dashed var(--tag-dark);
+    transform:rotate(-2deg);
+    max-width:calc(100% - 4px);
+  }
+  .price-tag::before{
+    content:"";
+    position:absolute; left:10px; top:50%; transform:translateY(-50%);
+    width:9px; height:9px; border-radius:50%;
+    background:var(--paper);
+    border:2px solid var(--ink);
+  }
+  .price-tag .eq{
+    font-size:20px;
+    color:var(--terracotta-dark);
+  }
+
+  /* ---------- Title slide ---------- */
+  .slide.title-slide, .slide.review-slide{
+    background:
+      radial-gradient(1200px 600px at 15% -10%, #FFF7E6 0%, transparent 60%),
+      radial-gradient(900px 500px at 110% 110%, #F6E4C1 0%, transparent 55%),
+      var(--paper);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px;
+  }
+  .title-wrap{
+    max-width:520px;
+    text-align:center;
+  }
+  .basket-emoji{
+    font-size:64px;
+    display:block;
+    margin-bottom:6px;
+    filter:drop-shadow(0 6px 10px rgba(0,0,0,.15));
+  }
+  .kicker{
+    font-family:"Baloo 2", sans-serif;
+    text-transform:uppercase;
+    letter-spacing:.14em;
+    font-size:13px;
+    font-weight:700;
+    color:var(--leaf);
+    margin-bottom:10px;
+  }
+  .title-wrap h1{
+    font-family:"Baloo 2", sans-serif;
+    font-size:clamp(34px, 8vw, 52px);
+    color:var(--terracotta-dark);
+    margin:0 0 10px;
+    line-height:1.05;
+  }
+  .title-wrap p.sub{
+    font-size:17px;
+    color:var(--ink-soft);
+    font-weight:600;
+    margin:0 0 28px;
+    line-height:1.5;
+  }
+  .start-btn{
+    font-family:"Baloo 2", sans-serif;
+    font-size:19px;
+    font-weight:700;
+    color:#fff;
+    background:linear-gradient(180deg, var(--terracotta) 0%, var(--terracotta-dark) 100%);
+    border:none;
+    padding:16px 34px;
+    border-radius:999px;
+    box-shadow:0 8px 0 #9E4A1E, 0 10px 20px rgba(0,0,0,.25);
+    cursor:pointer;
+    letter-spacing:.02em;
+    transition:transform .12s ease;
+  }
+  .start-btn:active{
+    transform:translateY(4px);
+    box-shadow:0 4px 0 #9E4A1E, 0 6px 12px rgba(0,0,0,.22);
+  }
+  .hint{
+    margin-top:22px;
+    font-size:13px;
+    color:var(--ink-soft);
+    opacity:.8;
+    font-weight:600;
+  }
+
+  /* ---------- Review slide ---------- */
+  .review-slide{ align-items:flex-start; overflow-y:auto; padding-top:calc(60px + env(safe-area-inset-top,0px)); }
+  .review-inner{ max-width:560px; width:100%; margin:0 auto; text-align:left; padding-bottom:60px;}
+  .review-inner h2{
+    font-family:"Baloo 2", sans-serif;
+    color:var(--terracotta-dark);
+    font-size:28px;
+    margin:0 0 4px;
+    text-align:center;
+  }
+  .review-inner .sub{
+    text-align:center;
+    color:var(--ink-soft);
+    font-weight:600;
+    margin-bottom:24px;
+    font-size:15px;
+  }
+  .q-card{
+    background:#fff;
+    border:2px solid var(--paper-dark);
+    border-radius:16px;
+    padding:16px 18px;
+    margin-bottom:14px;
+    box-shadow:0 4px 10px rgba(60,40,20,.08);
+  }
+  .q-card p{
+    margin:0 0 10px;
+    font-weight:700;
+    color:var(--ink);
+    font-size:16px;
+  }
+  .q-row{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .q-eq{
+    font-family:"Baloo 2", sans-serif;
+    font-size:20px;
+    color:var(--terracotta-dark);
+    font-weight:700;
+  }
+  .reveal-btn{
+    font-family:"Nunito Sans", sans-serif;
+    font-weight:700;
+    font-size:13px;
+    color:var(--leaf);
+    background:#EDF4E7;
+    border:1.5px solid var(--leaf);
+    border-radius:999px;
+    padding:6px 14px;
+    cursor:pointer;
+  }
+  .answer{
+    display:none;
+    font-family:"Baloo 2", sans-serif;
+    font-weight:700;
+    color:#fff;
+    background:var(--leaf);
+    padding:4px 12px;
+    border-radius:999px;
+    font-size:14px;
+  }
+  .q-card.revealed .answer{ display:inline-block; }
+  .q-card.revealed .reveal-btn{ display:none; }
+
+  /* ---------- Nav dots ---------- */
+  .dots{
+    position:absolute;
+    left:0; right:0;
+    bottom:calc(10px + env(safe-area-inset-bottom, 0px));
+    display:flex; justify-content:center; gap:8px;
+    z-index:10;
+    pointer-events:none;
+  }
+  .dot{
+    width:8px; height:8px; border-radius:50%;
+    background:rgba(255,255,255,.45);
+    transition:all .25s ease;
+  }
+  .dot.active{
+    width:22px;
+    background:#fff;
+  }
+  .title-slide ~ .dots, body.at-title .dots, body.at-review .dots{ display:none; }
+
+  /* ---------- Arrow buttons (desktop) ---------- */
+  .arrow-btn{
+    position:absolute; top:50%; transform:translateY(-50%);
+    width:46px; height:46px; border-radius:50%;
+    background:rgba(20,14,8,.38);
+    border:1.5px solid rgba(255,255,255,.5);
+    color:#fff; font-size:20px;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    z-index:10;
+    backdrop-filter:blur(2px);
+  }
+  .arrow-btn.prev{ left:16px; }
+  .arrow-btn.next{ right:16px; }
+  @media (max-width: 720px){
+    .arrow-btn{ display:none; }
+  }
+
+  .tap-zone{
+    position:absolute; top:0; bottom:0; width:34%;
+    z-index:3;
+  }
+  .tap-zone.left{ left:0; }
+  .tap-zone.right{ right:0; }
+
+  footer.credit{
+    position:fixed; bottom:4px; right:8px;
+    font-size:10px; color:rgba(58,43,30,.4);
+    z-index:1; font-family:"Nunito Sans", sans-serif;
+  }
+</style>
+</head>
+<body class="at-title">
+
+<div class="app" id="app">
+  <div class="track" id="track">
+
+    <!-- Slide 0: Title -->
+    <section class="slide title-slide">
+      <div class="title-wrap">
+        <span class="basket-emoji">🧺</span>
+        <div class="kicker">Project KABULIG • ARAL Math</div>
+        <h1>Ang Palengke<br>ni Nena</h1>
+        <p class="sub">Isang kwentong addition para sa Grade 2–3.<br>I-tap ang basket para magsimula.</p>
+        <button class="start-btn" id="startBtn">Simulan ang Kwento →</button>
+        <div class="hint">Pagkatapos, i-swipe pakaliwa para magpatuloy sa bawat pahina.</div>
+      </div>
+    </section>
+
+    <!-- Slide 1 -->
+    <section class="slide">
+      <img class="slide-bg" src="images/scene1-bahay.jpg" alt="Si Nena, may dalang basket, sa harap ng kanilang bahay">
+      <div class="scrim"></div>
+      <div class="eyebrow"><span class="part-label">Bahagi 1</span></div>
+      <div class="caption-card">
+        <div class="caption-weave"></div>
+        <p class="caption-text">Umaga pa lang, gising na si Nena. Sasama siya kay Nanay sa palengke. May dala silang basket para sa mga bibilhin.</p>
+      </div>
+    </section>
+
+    <!-- Slide 2 -->
+    <section class="slide">
+      <img class="slide-bg" src="images/scene2-prutas.jpg" alt="Puwesto ng prutas — mangga at saging">
+      <div class="scrim"></div>
+      <div class="eyebrow"><span class="part-label">Bahagi 2</span></div>
+      <div class="caption-card">
+        <div class="caption-weave"></div>
+        <p class="caption-text">Sa unang puwesto, bumili sila ng prutas. Bumili sila ng 3 mangga. Bumili rin sila ng 2 saging.</p>
+        <div class="price-tag">Ilan lahat? <span class="eq">3 + 2 = ___</span></div>
+      </div>
+    </section>
+
+    <!-- Slide 3 -->
+    <section class="slide">
+      <img class="slide-bg" src="images/scene3-gulay.jpg" alt="Puwesto ng gulay — kamatis at talong">
+      <div class="scrim"></div>
+      <div class="eyebrow"><span class="part-label">Bahagi 3</span></div>
+      <div class="caption-card">
+        <div class="caption-weave"></div>
+        <p class="caption-text">Sa susunod na puwesto, may nakita silang gulay. May 4 na kamatis. May 3 na talong.</p>
+        <div class="price-tag">Ilan lahat? <span class="eq">4 + 3 = ___</span></div>
+      </div>
+    </section>
+
+    <!-- Slide 4 -->
+    <section class="slide">
+      <img class="slide-bg" src="images/scene4-tinapay.jpg" alt="Tindahan ng tinapay — pandesal">
+      <div class="scrim"></div>
+      <div class="eyebrow"><span class="part-label">Bahagi 4</span></div>
+      <div class="caption-card">
+        <div class="caption-weave"></div>
+        <p class="caption-text">Bago umuwi, dumaan sila sa tindahan ng tinapay. Bumili sila ng 5 pandesal kaninang umaga. Bumili pa sila ng 4 na pandesal para sa meryenda.</p>
+        <div class="price-tag">Ilan lahat? <span class="eq">5 + 4 = ___</span></div>
+      </div>
+    </section>
+
+    <!-- Slide 5 -->
+    <section class="slide">
+      <img class="slide-bg" src="images/scene5-pauwi.jpg" alt="Sina Nena at Nanay, naglalakad pauwi, puno ang basket">
+      <div class="scrim"></div>
+      <div class="eyebrow"><span class="part-label">Bahagi 5</span></div>
+      <div class="caption-card">
+        <div class="caption-weave"></div>
+        <p class="caption-text">Masaya sina Nena at Nanay. Puno na ang kanilang basket. Handa na silang umuwi.</p>
+      </div>
+    </section>
+
+    <!-- Slide 6: Review -->
+    <section class="slide review-slide">
+      <div class="review-inner">
+        <h2>🧮 Buod na Tanong</h2>
+        <p class="sub">I-tap ang "Ipakita" para makita ang sagot.</p>
+
+        <div class="q-card">
+          <p>1. May 3 mangga at 2 saging. Ilan lahat?</p>
+          <div class="q-row">
+            <span class="q-eq">3 + 2 = ___</span>
+            <button class="reveal-btn" onclick="reveal(this)">Ipakita</button>
+            <span class="answer">= 5</span>
+          </div>
+        </div>
+
+        <div class="q-card">
+          <p>2. May 4 kamatis at 3 talong. Ilan lahat?</p>
+          <div class="q-row">
+            <span class="q-eq">4 + 3 = ___</span>
+            <button class="reveal-btn" onclick="reveal(this)">Ipakita</button>
+            <span class="answer">= 7</span>
+          </div>
+        </div>
+
+        <div class="q-card">
+          <p>3. May 5 pandesal at 4 pandesal. Ilan lahat?</p>
+          <div class="q-row">
+            <span class="q-eq">5 + 4 = ___</span>
+            <button class="reveal-btn" onclick="reveal(this)">Ipakita</button>
+            <span class="answer">= 9</span>
+          </div>
+        </div>
+
+        <div class="q-card">
+          <p>4. Kung idadagdag ang lahat ng prutas, gulay, at tinapay — ilan lahat ang binili ni Nena?</p>
+          <div class="q-row">
+            <span class="q-eq">5 + 7 + 9 = ___</span>
+            <button class="reveal-btn" onclick="reveal(this)">Ipakita</button>
+            <span class="answer">= 21</span>
+          </div>
+        </div>
+
+        <div style="text-align:center; margin-top:24px;">
+          <button class="start-btn" id="restartBtn">🔁 Ulitin ang Kwento</button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <button class="arrow-btn prev" id="prevBtn" aria-label="Bumalik">‹</button>
+  <button class="arrow-btn next" id="nextBtn" aria-label="Sumunod">›</button>
+  <div class="tap-zone left" id="tapLeft"></div>
+  <div class="tap-zone right" id="tapRight"></div>
+
+  <div class="dots" id="dots"></div>
+</div>
+
+<footer class="credit">Project KABULIG · ARAL Math</footer>
+
+<script>
+  /* ===================== CONFIG ===================== */
+  // Palitan ito ng URL ng iyong deployed Google Apps Script Web App
+  // (Deploy > New deployment > Web app > Execute as: Me > Who has access: Anyone)
+  const APPS_SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+  const STORY_NAME = "Ang Palengke ni Nena";
+
+  function logVisit(eventName){
+    if(!APPS_SCRIPT_URL || APPS_SCRIPT_URL.indexOf("PASTE_YOUR") === 0) return;
+    try{
+      const params = new URLSearchParams({
+        story: STORY_NAME,
+        event: eventName || "open",
+        ts: new Date().toISOString(),
+        ua: navigator.userAgent
+      });
+      fetch(APPS_SCRIPT_URL + "?" + params.toString(), { mode: "no-cors" });
+    }catch(err){ /* huwag hayaang mag-error ang app kahit mabigo ang logging */ }
+  }
+
+  /* ===================== SLIDER ===================== */
+  const track = document.getElementById('track');
+  const slides = Array.from(track.children);
+  const dotsWrap = document.getElementById('dots');
+  const total = slides.length;
+  let index = 0;
+
+  slides.forEach((_, i) => {
+    if(i === 0 || i === total - 1) return; // walang dot sa title at review
+    const d = document.createElement('div');
+    d.className = 'dot';
+    d.addEventListener('click', () => goTo(i));
+    dotsWrap.appendChild(d);
+  });
+  const dotEls = Array.from(dotsWrap.children);
+
+  function updateDots(){
+    dotEls.forEach((d, i) => d.classList.toggle('active', i === (index - 1)));
+  }
+
+  function render(){
+    track.style.transform = `translateX(-${index * 100}%)`;
+    document.body.classList.toggle('at-title', index === 0);
+    document.body.classList.toggle('at-review', index === total - 1);
+    updateDots();
+    document.getElementById('prevBtn').style.visibility = index === 0 ? 'hidden' : 'visible';
+    document.getElementById('nextBtn').style.visibility = index === total - 1 ? 'hidden' : 'visible';
+  }
+
+  function goTo(i){
+    index = Math.max(0, Math.min(total - 1, i));
+    render();
+  }
+  function next(){ goTo(index + 1); }
+  function prev(){ goTo(index - 1); }
+
+  document.getElementById('nextBtn').addEventListener('click', next);
+  document.getElementById('prevBtn').addEventListener('click', prev);
+  document.getElementById('tapLeft').addEventListener('click', prev);
+  document.getElementById('tapRight').addEventListener('click', next);
+  document.getElementById('startBtn').addEventListener('click', next);
+  document.getElementById('restartBtn').addEventListener('click', () => goTo(0));
+
+  window.addEventListener('keydown', (e) => {
+    if(e.key === 'ArrowRight') next();
+    if(e.key === 'ArrowLeft') prev();
+  });
+
+  // Touch swipe
+  let touchStartX = null, touchStartY = null, touching = false;
+  const app = document.getElementById('app');
+
+  app.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    touching = true;
+  }, { passive: true });
+
+  app.addEventListener('touchend', (e) => {
+    if(!touching || touchStartX === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    touching = false;
+    if(Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)){
+      if(dx < 0) next(); else prev();
+    }
+  }, { passive: true });
+
+  // Reveal answers on review slide
+  function reveal(btn){
+    btn.closest('.q-card').classList.add('revealed');
+  }
+  window.reveal = reveal;
+
+  // Init
+  render();
+  logVisit('open');
+</script>
+
+</body>
+</html>
